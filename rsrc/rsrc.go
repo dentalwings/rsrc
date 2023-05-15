@@ -68,7 +68,7 @@ func Embed(fnameout, arch, fnamein, fnameico, fnameversion string) (map[string]u
 	}
 
 	if fnameversion != "" {
-		if err := addVersion(out, fnameversion, newid); err != nil {
+		if err := addVersion(out, fnameversion); err != nil {
 			return nil, fmt.Errorf("adding version info %s: %w", fnameversion, err)
 		}
 	}
@@ -109,7 +109,7 @@ func addIcon(out *coff.Coff, fname string, newid func() uint16) (io.Closer, uint
 	return f, gid, nil
 }
 
-func addVersion(out *coff.Coff, fname string, newid func() uint16) error {
+func addVersion(out *coff.Coff, fname string) error {
 	input, err := os.Open(fname)
 	if err != nil {
 		return fmt.Errorf("opening %v: %w", input, err)
@@ -128,7 +128,7 @@ func addVersion(out *coff.Coff, fname string, newid func() uint16) error {
 
 	vi.Build()
 	vi.Walk()
-	out.AddResource(coff.RT_VERSION, newid(), goversioninfo.SizedReader{Buffer: &vi.Buffer})
+	out.AddResource(coff.RT_VERSION, 1, goversioninfo.SizedReader{Buffer: &vi.Buffer})
 
 	return nil
 }
