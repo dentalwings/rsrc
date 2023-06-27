@@ -31,6 +31,7 @@ func main() {
 		fnameversion string
 		fnameout     string
 		arch         string
+		pack         string
 	)
 
 	flags := flag.NewFlagSet("", flag.ExitOnError)
@@ -39,6 +40,7 @@ func main() {
 	flags.StringVar(&fnameversion, "version", "", "path to a JSON file for version info")
 	flags.StringVar(&fnameout, "o", "", "name of output COFF (.res or .syso) file; if set to empty, will default to 'rsrc_windows_{arch}.syso'")
 	flags.StringVar(&arch, "arch", "amd64", "architecture of output file - one of: 386, amd64, [EXPERIMENTAL: arm, arm64]")
+	flags.StringVar(&pack, "package", "main", "go package of generated ID map")
 	flags.Usage = func() {
 		fmt.Fprintf(os.Stderr, usage, os.Args[0])
 		flags.PrintDefaults()
@@ -57,5 +59,5 @@ func main() {
 		log.Fatal("embedding rsrc error: ", err)
 	}
 
-	rsrc.PrintIds(ids)
+	rsrc.PrintIds(pack, ids)
 }
